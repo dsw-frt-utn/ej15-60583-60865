@@ -1,4 +1,5 @@
 ﻿using Dsw2026Ej15.Api.Models;
+using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
