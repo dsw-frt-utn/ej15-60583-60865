@@ -1,7 +1,7 @@
 using Dsw2026Ej15.Domain;
 using Dsw2026Ej15.Data;
 
-namespace Dsw2026Ej15
+namespace Dsw2026Ej15.Api
 {
     public class Program
     {
