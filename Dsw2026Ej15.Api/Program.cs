@@ -1,3 +1,5 @@
+using Dsw2026Ej15.Domain;
+using Dsw2026Ej15.Data;
 
 namespace Dsw2026Ej15
 {
@@ -12,6 +14,8 @@ namespace Dsw2026Ej15
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddSingleton<IPersistence, PersistenceInMemory>();
 
             var app = builder.Build();
 
