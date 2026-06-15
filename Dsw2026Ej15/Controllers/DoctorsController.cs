@@ -2,7 +2,7 @@
 using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Numerics;
+using System.Linq;
 
 namespace Dsw2026Ej15.Api.Controllers
 {
@@ -11,11 +11,13 @@ namespace Dsw2026Ej15.Api.Controllers
     public class DoctorsController : ControllerBase
     {
         private readonly IPersistence _persistence;
+
         public DoctorsController(IPersistence persistence)
         {
             _persistence = persistence;
         }
 
+        // i. Primer endpoint: POST
         [HttpPost]
         public IActionResult CreateDoctor([FromBody] CreateDoctorRequest request)
         {
@@ -24,26 +26,72 @@ namespace Dsw2026Ej15.Api.Controllers
 
             if (string.IsNullOrWhiteSpace(request.LicenseNumber))
                 return BadRequest("El LicenseNumber es requerido.");
-            // Validar que la especialidad exista en la base de datos
+
             var speciality = _persistence.GetSpecialityById(request.SpecialityId);
+
             if (speciality == null)
                 return BadRequest("La especialidad indicada no existe.");
 
-            // 2. Crear la entidad de dominio
             var newDoctor = new Doctor
             {
-                Id = Guid.NewGuid(), 
+                Id = Guid.NewGuid(),
                 Name = request.Name,
                 LicenseNumber = request.LicenseNumber,
-                IsActive = true,    
+                IsActive = true,
                 Speciality = speciality
             };
 
-            // 3. Guardar en la base de datos
             _persistence.AddDoctor(newDoctor);
 
-            // 4. Respuesta exitosa: 201 Created
             return StatusCode(201, newDoctor);
         }
+
+        // ii. Segundo endpoint: GET
+        [HttpGet]
+        public IActionResult GetActiveDoctors()
+        {
+            var allDoctors = _persistence.GetDoctors();
+            var activeDoctors = allDoctors.Where(d => d.IsActive).ToList();
+
+            return Ok(activeDoctors);
+        }
+    
+        //Tercer endpoint: GET por ID
+    [HttpGet("{id}")]
+        public IActionResult GetDoctorById(Guid id)
+        {
+            var doctor = _persistence.GetDoctorById(id);
+
+            if (doctor == null || !doctor.IsActive)
+            {
+                return NotFound("Medico no encontrado o inactivo.");
+            }
+            var response = new DoctorDetailResponse
+            {
+                Name = doctor.Name,
+                LicenseNumber = doctor.LicenseNumber,
+                SpecialityName = doctor.Speciality?.Name
+            };
+            return Ok(response);
+        }
+        // Cuarto endpoint: DELETE
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDoctor(Guid id)
+        {
+            
+            var doctor = _persistence.GetDoctorById(id);
+
+            
+            if (doctor == null || !doctor.IsActive)
+            {
+                return NotFound("Medico no encontrado o ya se encuentra inactivo.");
+            }
+   
+            doctor.IsActive = false;
+            return NoContent();
+        }
+
+
+
     }
 }
