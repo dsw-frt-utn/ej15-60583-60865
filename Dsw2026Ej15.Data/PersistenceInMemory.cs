@@ -1,5 +1,6 @@
 ﻿using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
+using System.Text.Json;
 
 namespace Dsw2026Ej15.Data
 {
@@ -12,36 +13,54 @@ namespace Dsw2026Ej15.Data
         {
             _doctors = new List<Doctor>();
             _specialities = new List<Speciality>();
+            LoadSpecialities();
+        }
 
+        private void LoadSpecialities()
+        {
+            string filePath = "speacilities.json";
+
+            if (File.Exists(filePath))
+            {
+                var json = File.ReadAllText(filePath);
+
+                var options = new JsonSerializerOptions{ PropertyNameCaseInsensitive = true};
+
+                var specialitiesFromFile = JsonSerializer.Deserialize<List<Speciality>>(json, options);
+
+                if(specialitiesFromFile != null)
+                {
+                    _specialities.AddRange(specialitiesFromFile);
+                }
+            }
         }
         public void AddDoctor(Doctor doctor)
         {
-            
-        }
-
-        public void AddSpeciality(Speciality speciality)
-        {
-            throw new NotImplementedException();
+            _doctors.Add(doctor);
         }
 
         public Doctor? GetDoctorById(Guid id)
         {
-            throw new NotImplementedException();
+            return _doctors.FirstOrDefault(d => d.Id == id);
         }
 
         public List<Doctor> GetDoctors()
         {
-            throw new NotImplementedException();
+            return _doctors;
         }
 
+        public void AddSpeciality(Speciality speciality)
+        {
+            _specialities.Add(speciality);
+        }
         public List<Speciality> GetSpecialities()
         {
-            throw new NotImplementedException();
+            return _specialities;
         }
 
         public Speciality? GetSpecialityById(Guid id)
         {
-            throw new NotImplementedException();
+            return _specialities.FirstOrDefault(s => s.Id == id);
         }
     }
 }
