@@ -3,6 +3,7 @@ using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Dsw2026Ej15.Domain.Exceptions;
 
 namespace Dsw2026Ej15.Api.Controllers
 {
@@ -22,15 +23,15 @@ namespace Dsw2026Ej15.Api.Controllers
         public IActionResult CreateDoctor([FromBody] CreateDoctorRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
-                return BadRequest("El Name es requerido.");
+                throw new ValidationException("El Name es requerido.");
 
             if (string.IsNullOrWhiteSpace(request.LicenseNumber))
-                return BadRequest("El LicenseNumber es requerido.");
+                throw new ValidationException("El LicenseNumber es requerido.");
 
             var speciality = _persistence.GetSpecialityById(request.SpecialityId);
 
             if (speciality == null)
-                return BadRequest("La especialidad indicada no existe.");
+                throw new ValidationException("La especialidad indicada no existe.");
 
             var newDoctor = new Doctor
             {
@@ -56,7 +57,7 @@ namespace Dsw2026Ej15.Api.Controllers
             return Ok(activeDoctors);
         }
     
-        //Tercer endpoint: GET por ID
+        // iii Tercer endpoint: GET por ID
     [HttpGet("{id}")]
         public IActionResult GetDoctorById(Guid id)
         {
@@ -74,7 +75,7 @@ namespace Dsw2026Ej15.Api.Controllers
             };
             return Ok(response);
         }
-        // Cuarto endpoint: DELETE
+        // iv Cuarto endpoint: DELETE
         [HttpDelete("{id}")]
         public IActionResult DeleteDoctor(Guid id)
         {
