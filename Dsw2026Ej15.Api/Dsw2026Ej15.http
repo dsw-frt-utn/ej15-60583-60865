@@ -1,6 +1,9 @@
-@Dsw2026Ej15_HostAddress = http://localhost:5010
 
-GET {{Dsw2026Ej15_HostAddress}}/weatherforecast/
-Accept: application/json
+POST https://localhost:59173/api/doctors
+Content-Type: application/json
 
-###
+{
+  "name": "Juan Perez",
+  "licenseNumber": "MP-12345",
+  "specialityId": "8a1f3b78-3f66-4d68-8d6e-1c5b9c7a2f41"
+}
