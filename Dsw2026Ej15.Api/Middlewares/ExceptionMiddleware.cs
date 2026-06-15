@@ -23,7 +23,6 @@ namespace Dsw2026Ej15.Api.Middlewares
             {
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
                 var response = new { mensaje = ex.Message };
                 await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
@@ -31,7 +30,6 @@ namespace Dsw2026Ej15.Api.Middlewares
             {
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
                 var response = new { mensaje = "Ocurrió un problema interno en el servidor.", detalle = ex.Message };
                 await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }

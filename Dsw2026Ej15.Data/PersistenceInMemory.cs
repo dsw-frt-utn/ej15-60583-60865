@@ -18,7 +18,7 @@ namespace Dsw2026Ej15.Data
 
         private void LoadSpecialities()
         {
-            string filePath = "speacilities.json";
+            string filePath = "specialities.json";
 
             if (File.Exists(filePath))
             {

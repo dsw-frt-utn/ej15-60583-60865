@@ -53,7 +53,7 @@ namespace Dsw2026Ej15.Api.Controllers
         {
             var allDoctors = _persistence.GetDoctors();
             var activeDoctors = allDoctors.Where(d => d.IsActive).ToList();
-
+            //var activeDoctors = _persistence.GetDoctors().Where(d => d.IsActive).ToList();
             return Ok(activeDoctors);
         }
     
