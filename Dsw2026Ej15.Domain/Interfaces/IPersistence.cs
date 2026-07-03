@@ -4,12 +4,13 @@ namespace Dsw2026Ej15.Domain.Interfaces
 {
     public interface IPersistence
     {
-        List<Doctor> GetDoctors();
-        Doctor? GetDoctorById(Guid id);
-        void AddDoctor(Doctor doctor);
+        Task<List<Doctor>> GetDoctorsAsync();
+        Task<Doctor?> GetDoctorByIdAsync(Guid id);
+        Task AddDoctorAsync(Doctor doctor);
+        Task UpdateDoctorAsync(Doctor doctor);
 
-        List<Speciality> GetSpecialities();
-        Speciality? GetSpecialityById(Guid id);
-        void AddSpeciality(Speciality speciality);
+        Task<List<Speciality>> GetSpecialitiesAsync();
+        Task<Speciality?> GetSpecialityByIdAsync(Guid id);
+        Task AddSpecialityAsync(Speciality speciality);
     }
 }
