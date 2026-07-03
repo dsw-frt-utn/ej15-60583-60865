@@ -13,6 +13,7 @@ namespace Dsw2026Ej15.Data
         {
             _doctors = new List<Doctor>();
             _specialities = new List<Speciality>();
+
             LoadSpecialities();
         }
 
@@ -24,43 +25,65 @@ namespace Dsw2026Ej15.Data
             {
                 var json = File.ReadAllText(filePath);
 
-                var options = new JsonSerializerOptions{ PropertyNameCaseInsensitive = true};
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
 
                 var specialitiesFromFile = JsonSerializer.Deserialize<List<Speciality>>(json, options);
 
-                if(specialitiesFromFile != null)
+                if (specialitiesFromFile != null)
                 {
                     _specialities.AddRange(specialitiesFromFile);
                 }
             }
         }
-        public void AddDoctor(Doctor doctor)
+
+        public Task<List<Doctor>> GetDoctorsAsync()
+        {
+            return Task.FromResult(_doctors);
+        }
+
+        public Task<Doctor?> GetDoctorByIdAsync(Guid id)
+        {
+            var doctor = _doctors.FirstOrDefault(d => d.Id == id);
+            return Task.FromResult(doctor);
+        }
+
+        public Task AddDoctorAsync(Doctor doctor)
         {
             _doctors.Add(doctor);
+            return Task.CompletedTask;
         }
 
-        public Doctor? GetDoctorById(Guid id)
+        public Task UpdateDoctorAsync(Doctor doctor)
         {
-            return _doctors.FirstOrDefault(d => d.Id == id);
+            var existingDoctor = _doctors.FirstOrDefault(d => d.Id == doctor.Id);
+
+            if (existingDoctor != null)
+            {
+                _doctors.Remove(existingDoctor);
+                _doctors.Add(doctor);
+            }
+
+            return Task.CompletedTask;
         }
 
-        public List<Doctor> GetDoctors()
+        public Task<List<Speciality>> GetSpecialitiesAsync()
         {
-            return _doctors;
+            return Task.FromResult(_specialities);
         }
 
-        public void AddSpeciality(Speciality speciality)
+        public Task<Speciality?> GetSpecialityByIdAsync(Guid id)
+        {
+            var speciality = _specialities.FirstOrDefault(s => s.Id == id);
+            return Task.FromResult(speciality);
+        }
+
+        public Task AddSpecialityAsync(Speciality speciality)
         {
             _specialities.Add(speciality);
-        }
-        public List<Speciality> GetSpecialities()
-        {
-            return _specialities;
-        }
-
-        public Speciality? GetSpecialityById(Guid id)
-        {
-            return _specialities.FirstOrDefault(s => s.Id == id);
+            return Task.CompletedTask;
         }
     }
 }
