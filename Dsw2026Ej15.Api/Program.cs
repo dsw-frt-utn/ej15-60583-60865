@@ -22,7 +22,7 @@ namespace Dsw2026Ej15.Api
             builder.Services.AddDbContext<Dsw2026Ej15DbContext>(options =>
                 options.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=Dsw2026Ej15Db;Trusted_Connection=True;TrustServerCertificate=True;"));
 
-            builder.Services.AddSingleton<IPersistence, PersistenceInMemory>();
+            builder.Services.AddScoped<IPersistence, PersistenceEf>();
 
             builder.Services.AddHealthChecks();
 
