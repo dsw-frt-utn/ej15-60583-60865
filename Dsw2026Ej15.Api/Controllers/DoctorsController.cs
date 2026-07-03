@@ -1,10 +1,8 @@
 ﻿using Dsw2026Ej15.Api.Models;
 using Dsw2026Ej15.Domain.Entities;
+using Dsw2026Ej15.Domain.Exceptions;
 using Dsw2026Ej15.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System;
-using Dsw2026Ej15.Domain.Exceptions;
 
 namespace Dsw2026Ej15.Api.Controllers
 {
@@ -21,9 +19,8 @@ namespace Dsw2026Ej15.Api.Controllers
 
         // i. Primer endpoint: POST
         [HttpPost]
-        public IActionResult CreateDoctor([FromBody] CreateDoctorRequest request)
+        public async Task<IActionResult> CreateDoctor([FromBody] CreateDoctorRequest request)
         {
-         
             if (request == null)
                 throw new ValidationException("El cuerpo de la petición no puede estar vacío.");
 
@@ -33,7 +30,7 @@ namespace Dsw2026Ej15.Api.Controllers
             if (string.IsNullOrWhiteSpace(request.LicenseNumber))
                 throw new ValidationException("El LicenseNumber es requerido.");
 
-            var speciality = _persistence.GetSpecialityById(request.SpecialityId);
+            var speciality = await _persistence.GetSpecialityByIdAsync(request.SpecialityId);
 
             if (speciality == null)
                 throw new ValidationException("La especialidad indicada no existe.");
@@ -47,26 +44,29 @@ namespace Dsw2026Ej15.Api.Controllers
                 Speciality = speciality
             };
 
-            _persistence.AddDoctor(newDoctor);
+            await _persistence.AddDoctorAsync(newDoctor);
 
             return StatusCode(201, newDoctor);
         }
 
         // ii. Segundo endpoint: GET
         [HttpGet]
-        public IActionResult GetActiveDoctors()
+        public async Task<IActionResult> GetActiveDoctors()
         {
-            var allDoctors = _persistence.GetDoctors();
-            var activeDoctors = allDoctors.Where(d => d.IsActive).ToList();
+            var allDoctors = await _persistence.GetDoctorsAsync();
+
+            var activeDoctors = allDoctors
+                .Where(d => d.IsActive)
+                .ToList();
 
             return Ok(activeDoctors);
         }
 
         // iii. Tercer endpoint: GET por ID
         [HttpGet("{id}")]
-        public IActionResult GetDoctorById(Guid id)
+        public async Task<IActionResult> GetDoctorById(Guid id)
         {
-            var doctor = _persistence.GetDoctorById(id);
+            var doctor = await _persistence.GetDoctorByIdAsync(id);
 
             if (doctor == null || !doctor.IsActive)
             {
@@ -85,9 +85,9 @@ namespace Dsw2026Ej15.Api.Controllers
 
         // iv. Cuarto endpoint: DELETE
         [HttpDelete("{id}")]
-        public IActionResult DeleteDoctor(Guid id)
+        public async Task<IActionResult> DeleteDoctor(Guid id)
         {
-            var doctor = _persistence.GetDoctorById(id);
+            var doctor = await _persistence.GetDoctorByIdAsync(id);
 
             if (doctor == null || !doctor.IsActive)
             {
@@ -95,6 +95,9 @@ namespace Dsw2026Ej15.Api.Controllers
             }
 
             doctor.IsActive = false;
+
+            await _persistence.UpdateDoctorAsync(doctor);
+
             return NoContent();
         }
     }
