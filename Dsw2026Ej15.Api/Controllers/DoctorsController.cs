@@ -41,6 +41,7 @@ namespace Dsw2026Ej15.Api.Controllers
                 Name = request.Name,
                 LicenseNumber = request.LicenseNumber,
                 IsActive = true,
+                SpecialityId = request.SpecialityId,
                 Speciality = speciality
             };
 

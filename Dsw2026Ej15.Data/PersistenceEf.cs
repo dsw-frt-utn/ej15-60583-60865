@@ -47,6 +47,7 @@ namespace Dsw2026Ej15.Data
             existingDoctor.Name = doctor.Name;
             existingDoctor.LicenseNumber = doctor.LicenseNumber;
             existingDoctor.IsActive = doctor.IsActive;
+            existingDoctor.SpecialityId = doctor.SpecialityId;
             existingDoctor.Speciality = doctor.Speciality;
 
             await _context.SaveChangesAsync();

@@ -12,5 +12,16 @@ namespace Dsw2026Ej15.Data
 
         public DbSet<Doctor> Doctors { get; set; } = null!;
         public DbSet<Speciality> Specialities { get; set; } = null!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Doctor>()
+                .HasOne(d => d.Speciality)
+                .WithMany()
+                .HasForeignKey(d => d.SpecialityId)
+                .IsRequired();
+        }
     }
 }
